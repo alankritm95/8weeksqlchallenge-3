@@ -51,7 +51,7 @@ ORDER BY plans.plan_id;
 
 
 
-What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+### What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
 SELECT
   COUNT(DISTINCT sub.customer_id) AS churned_customers,
@@ -67,9 +67,20 @@ WHERE plans.plan_id = 4;
 ![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/0c2556a1-31a6-4909-81ca-37cc037d2241)
 
 
-How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+### How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
+with cte as(
+select *, lead(plan_id, 1) over(partition by customer_id order by plan_id asc) as next_plan from subscriptions),
 
+cte2 as (
+select * from cte where plan_id = 0 and next_plan = 4
+)
+
+select count(customer_id) as 'customers_churned',
+round(count(customer_id) *100/(select count(distinct customer_id) from subscriptions), 2) as '%customers_churned'
+ from cte2;
+
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/40f22c4f-8363-48a9-8b08-208439261001)
 
 
 What is the number and percentage of customer plans after their initial free trial?
