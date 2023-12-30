@@ -129,8 +129,45 @@ GROUP BY plan_id;
 
 
 How many customers have upgraded to an annual plan in 2020?
+
+with cte AS (
+  SELECT
+    customer_id,
+    plan_id,
+    LEAD(plan_id) OVER (
+      PARTITION BY customer_id
+      ORDER BY start_date
+    ) AS next_plan
+  FROM subscriptions
+  WHERE start_date <= '2020-12-31'
+)
+
+SELECT
+	next_plan, 
+	COUNT(DISTINCT customer_id) AS customers,
+  ROUND(100.0 * 
+    COUNT(DISTINCT customer_id)
+    / (SELECT COUNT(DISTINCT customer_id) 
+      FROM subscriptions)
+  ,1) AS percentage
+FROM cte
+WHERE next_plan = 3
+group by next_plan;
+
+
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/00df82ad-1dc8-4c7c-b322-0e520f6387bf)
+
 How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+
+
+
+
+
 Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+
+
+
+
 How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
 
