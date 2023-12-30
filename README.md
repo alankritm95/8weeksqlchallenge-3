@@ -36,11 +36,42 @@ order by month(start_date) asc;
 
 ### What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
 
+SELECT 
+  plans.plan_id,
+  plans.plan_name,
+  COUNT(sub.customer_id) AS num_of_events
+FROM subscriptions AS sub
+JOIN plans
+  ON sub.plan_id = plans.plan_id
+WHERE sub.start_date >= '2021-01-01'
+GROUP BY plans.plan_id, plans.plan_name
+ORDER BY plans.plan_id;
+
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/6d44ca69-b350-43ed-be91-1d8c97303d8a)
 
 
 
 What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+
+SELECT
+  COUNT(DISTINCT sub.customer_id) AS churned_customers,
+  ROUND(100.0 * COUNT(sub.customer_id)
+    / (SELECT COUNT(DISTINCT customer_id) 
+    	FROM subscriptions)
+  ,1) AS churn_percentage
+FROM subscriptions AS sub
+JOIN plans
+  ON sub.plan_id = plans.plan_id
+WHERE plans.plan_id = 4;
+
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/0c2556a1-31a6-4909-81ca-37cc037d2241)
+
+
 How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+
+
+
+
 What is the number and percentage of customer plans after their initial free trial?
 What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 How many customers have upgraded to an annual plan in 2020?
