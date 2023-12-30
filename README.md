@@ -84,6 +84,9 @@ round(count(customer_id) *100/(select count(distinct customer_id) from subscript
 
 
 What is the number and percentage of customer plans after their initial free trial?
+
+
+
 What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 How many customers have upgraded to an annual plan in 2020?
 How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
