@@ -159,16 +159,55 @@ group by next_plan;
 
 How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
 
+WITH trial_plan AS (
+  SELECT 
+    customer_id, 
+    start_date AS trial_date
+  FROM subscriptions
+  WHERE plan_id = 0
+), annual_plan AS (
+  SELECT 
+    customer_id, 
+    start_date AS annual_date
+  FROM subscriptions
+  WHERE plan_id = 3
+)
+SELECT 
+  ROUND(
+    AVG(
+      annual.annual_date - trial.trial_date)
+  ,0) AS avg_days_to_upgrade
+FROM trial_plan AS trial
+JOIN annual_plan AS annual
+  ON trial.customer_id = annual.customer_id;
 
-
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/c51c7eff-c156-4ed5-8bce-6c92e2dfee48)
 
 
 Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
+WITH next_plan_cte AS
+  (SELECT *,
+          lead(start_date, 1) over(PARTITION BY customer_id
+                                   ORDER BY start_date) AS next_plan_start_date,
+          lead(plan_id, 1) over(PARTITION BY customer_id
+                                ORDER BY start_date) AS next_plan
+   FROM subscriptions),
+     window_details_cte AS
+  (SELECT *,
+          datediff(next_plan_start_date, start_date) AS days,
+          round(datediff(next_plan_start_date, start_date)/30) AS window_30_days
+   FROM next_plan_cte
+   WHERE next_plan=3)
+SELECT window_30_days,
+       count(*) AS customer_count
+FROM window_details_cte
+GROUP BY window_30_days
+ORDER BY window_30_days;
 
 
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/af2e844d-4a93-47f8-9ec6-a4c9b5d33ee8)
 
-How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
 
 
