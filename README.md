@@ -83,7 +83,7 @@ round(count(customer_id) *100/(select count(distinct customer_id) from subscript
 ![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/40f22c4f-8363-48a9-8b08-208439261001)
 
 
-What is the number and percentage of customer plans after their initial free trial?
+### What is the number and percentage of customer plans after their initial free trial?
 
 SELECT plan_name,
        count(customer_id) customer_count,
@@ -98,7 +98,7 @@ GROUP BY plan_name;
 ![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/20d17759-f7cd-4b6e-8b06-c1ce6cbcc95a)
 
 
-What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+### What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
 with cte AS (
   SELECT
