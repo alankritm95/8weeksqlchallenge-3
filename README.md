@@ -85,6 +85,17 @@ round(count(customer_id) *100/(select count(distinct customer_id) from subscript
 
 What is the number and percentage of customer plans after their initial free trial?
 
+SELECT plan_name,
+       count(customer_id) customer_count,
+       round(100 *count(DISTINCT customer_id) /
+               (SELECT count(DISTINCT customer_id) 
+                FROM subscriptions), 2) AS 'customer percentage'
+FROM subscriptions s
+JOIN plans p on s.plan_id = p.plan_id
+WHERE plan_name != 'trial'
+GROUP BY plan_name;
+
+![image](https://github.com/alankritm95/8weeksqlchallenge-3/assets/129503746/20d17759-f7cd-4b6e-8b06-c1ce6cbcc95a)
 
 
 What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
